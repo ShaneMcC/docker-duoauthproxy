@@ -34,8 +34,7 @@ CHANGED_THING=()
 LATEST_IMAGE=$(curl -L -s 'https://registry.hub.docker.com/v2/repositories/library/'"${UPSTREAM}"'/tags' | jq -r '[.results[].name | select(match(".*-minimal-.*"))] | sort | reverse | .[0]')
 
 # Latest version of duoauthproxy
-DUOAUTH_URL="https://dl.duosecurity.com/duoauthproxy-latest-src.tgz"
-LATEST_DUOAUTH=$(curl -v -s -X HEAD -L "${DUOAUTH_URL}" 2>&1 | grep -i "content-disposition:" | grep -Eo "duoauthproxy-[0-9]+\.[0-9]+\.[0-9]+-src\.tgz" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
+LATEST_DUOAUTH=$(curl -s https://dl.duosecurity.com/authproxy_version.json | jq -r '.releases | keys | max')
 
 if [ "${CURRENT_IMAGE}" != "${LATEST_IMAGE}" ]; then
 	CHANGED_THING+=(\`"${UPSTREAM}:${CURRENT_IMAGE}\` => \`${UPSTREAM}:${LATEST_IMAGE}\`")
