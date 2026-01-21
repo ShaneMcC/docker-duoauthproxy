@@ -42,7 +42,7 @@ jobs:
         with:
           push: true
           context: .
-          tags: ghcr.io/${{ github.repository_owner }}/docker-duoauthproxy:dev-latest
+          tags: ghcr.io/shanemcc/docker-duoauthproxy:dev-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
