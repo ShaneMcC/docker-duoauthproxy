@@ -1,0 +1,38 @@
+name: Build and Push
+
+on:
+  workflow_call:
+    inputs:
+      commit_hash:
+        required: false
+        type: string
+  workflow_dispatch:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and Push
+    concurrency: build-and-push
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        if: inputs.commit_hash == ''
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.commit_hash }}
+        if: inputs.commit_hash != ''
+
+      - name: Build and Deploy to GHCR
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: docker-duoauthproxy
+          tags: dev-latest
+          dockerfile: Dockerfile
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}

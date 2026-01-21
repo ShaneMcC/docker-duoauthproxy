@@ -1,0 +1,60 @@
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *'
+
+name: Check image updates
+
+jobs:
+  update:
+    name: Check image updates
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      changes_detected: ${{ steps.check-for-updates.outputs.changes_detected }}
+      commit_hash: ${{ steps.auto-commit-action.outputs.commit_hash }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v6
+
+      - name: Check for updates
+        id: check-for-updates
+        run:  "${GITHUB_WORKSPACE}/.github/updateDockerfile.sh"
+
+      - name: Build Docker Image
+        if: steps.check-for-updates.outputs.changes_detected == 'true'
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: shanemcc/docker-duoauthproxy
+          tags: dev-latest
+          dockerfile: Dockerfile
+          registry: docker.io
+          pushImage: false
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push changed file
+        id: auto-commit-action
+        if: steps.check-for-updates.outputs.changes_detected == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+            commit_message: Update Dockerfile (${{ steps.check-for-updates.outputs.changed_items }})
+            file_pattern: 'Dockerfile'
+
+  build-and-push:
+    uses: ./.github/workflows/build-and-push.yml
+    needs: update
+    secrets: inherit
+    if: needs.update.outputs.changes_detected == 'true'
+    with:
+        commit_hash: ${{ needs.update.outputs.commit_hash }}
+
+  #keepalive-job:
+  #  name: Keepalive Workflow
+  #  runs-on: ubuntu-latest
+  #  permissions:
+  #    actions: write
+  #  steps:
+  #    - uses: actions/checkout@v6
+  #    - uses: gautamkrishnar/keepalive-workflow@v2
