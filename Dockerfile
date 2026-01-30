@@ -1,4 +1,4 @@
-FROM almalinux:9.7-minimal-20260104 AS base
+FROM almalinux:9.7-minimal-20260129 AS base
 
 LABEL org.opencontainers.image.authors="Shane Mc Cormack <dataforce@dataforce.org.uk>"
 LABEL org.opencontainers.image.description="Duo Auth Proxy in Docker."
