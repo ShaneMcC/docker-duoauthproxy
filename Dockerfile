@@ -1,4 +1,4 @@
-FROM almalinux:9.7-minimal-20260509 AS base
+FROM almalinux:9.8-minimal-20260526 AS base
 
 LABEL org.opencontainers.image.authors="Shane Mc Cormack <dataforce@dataforce.org.uk>"
 LABEL org.opencontainers.image.description="Duo Auth Proxy in Docker."
@@ -19,8 +19,8 @@ RUN dnf install -y gcc make libffi-devel zlib-devel diffutils \
         tar python-devel procps
 
 # Build proxy
-ADD https://dl.duosecurity.com/duoauthproxy-6.6.0-src.tgz /tmp/duoauthproxy-1fb6d07f8266fa1ab1b3fa3b6e862323.tgz
-RUN cd /tmp && tar -zxvf /tmp/duoauthproxy-1fb6d07f8266fa1ab1b3fa3b6e862323.tgz && mv /tmp/duoauthproxy*/ /tmp/duoauthproxy
+ADD https://dl.duosecurity.com/duoauthproxy-6.7.0-src.tgz /tmp/duoauthproxy-a8fba0269347c3e9a8a974d3bdc8e549.tgz
+RUN cd /tmp && tar -zxvf /tmp/duoauthproxy-a8fba0269347c3e9a8a974d3bdc8e549.tgz && mv /tmp/duoauthproxy*/ /tmp/duoauthproxy
 RUN cd /tmp/duoauthproxy && make
 
 # Install Proxy
