@@ -19,8 +19,8 @@ RUN dnf install -y gcc make libffi-devel zlib-devel diffutils \
         tar python-devel procps
 
 # Build proxy
-ADD https://dl.duosecurity.com/duoauthproxy-6.7.0-src.tgz /tmp/duoauthproxy-a8fba0269347c3e9a8a974d3bdc8e549.tgz
-RUN cd /tmp && tar -zxvf /tmp/duoauthproxy-a8fba0269347c3e9a8a974d3bdc8e549.tgz && mv /tmp/duoauthproxy*/ /tmp/duoauthproxy
+ADD https://dl.duosecurity.com/duoauthproxy-6.8.0-src.tgz /tmp/duoauthproxy-6be8299f4ea7324795feb42a59edbea7.tgz
+RUN cd /tmp && tar -zxvf /tmp/duoauthproxy-6be8299f4ea7324795feb42a59edbea7.tgz && mv /tmp/duoauthproxy*/ /tmp/duoauthproxy
 RUN cd /tmp/duoauthproxy && make
 
 # Install Proxy
